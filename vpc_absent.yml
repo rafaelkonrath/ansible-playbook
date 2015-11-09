@@ -5,8 +5,7 @@
       - region: us-west-2
         state: absent
         cidr_block: 10.1.0.0/16
-        resource_tags:
-          Environment: dev
+        resource_tags: { "Name": "vpc-dev", "Environment": "dev" }
         internet_gateway: True
         # there are 3 zones in us-west-2 (Oregon)
         subnets:
