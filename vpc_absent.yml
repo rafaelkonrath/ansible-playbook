@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  vars:
+    vpc_list:
+      - region: us-west-2
+        state: absent
+        cidr_block: 10.1.0.0/16
+        resource_tags:
+          Environment: dev
+        internet_gateway: True
+        # there are 3 zones in us-west-2 (Oregon)
+        subnets:
+          - cidr: 10.1.0.0/24
+            az: us-west-2a
+            resource_tags: { "Name": "dev_public", "Environment": "dev", "Tier": "public" }
+          - cidr: 10.1.100.0/24
+            az: us-west-2a
+            resource_tags: { "Name": "dev_private", "Environment": "dev", "Tier": "private" }
+
+  tasks:
+    - name: process vpc
+      ec2_vpc:
+        region: "{{ item.region }}"
+        state: "{{ item.state }}"
+        cidr_block: "{{ item.cidr_block }}"
+        resource_tags: "{{ item.resource_tags }}"
+        internet_gateway: "{{ item.internet_gateway }}"
+        subnets: "{{ item.subnets }}"
+      with_items: vpc_list
+      register: ec2_vpc_out
